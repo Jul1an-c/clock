@@ -1,0 +1,26 @@
+# Definir variables
+$Desktop = [System.Environment]::GetFolderPath('Desktop')
+$FolderName = "Sala"
+$SubFolderName = "Sala Cuadrada"
+$NetworkFolder = "\\$env:COMPUTERNAME\SharedFolder"
+
+# Ruta completa de la carpeta y subcarpeta
+$FolderPath = Join-Path $Desktop $FolderName
+$SubFolderPath = Join-Path $FolderPath $SubFolderName
+
+# Verificar si la carpeta "Sala" existe en el escritorio
+if (Test-Path $FolderPath) {
+    Write-Host "La carpeta ya existe, eliminando..."
+    Remove-Item -Recurse -Force $FolderPath
+}
+
+# Crear la carpeta "Sala" en el escritorio
+New-Item -Path $FolderPath -ItemType Directory
+
+# Crear un enlace simbólico a la carpeta de red en "Sala Cuadrada"
+New-Item -Path $SubFolderPath -ItemType Junction -Value $NetworkFolder
+
+# Crear la carpeta compartida en el directorio de red
+New-Item -Path "$NetworkFolder\$env:COMPUTERNAME" -ItemType Directory -Force
+
+Write-Host "Proceso completado."
