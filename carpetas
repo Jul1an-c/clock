@@ -2,25 +2,23 @@
 $Desktop = [System.Environment]::GetFolderPath('Desktop')
 $FolderName = "Sala"
 $SubFolderName = "Sala Cuadrada"
-$NetworkFolder = "\\$env:COMPUTERNAME\SharedFolder"
 
 # Ruta completa de la carpeta y subcarpeta
 $FolderPath = Join-Path $Desktop $FolderName
 $SubFolderPath = Join-Path $FolderPath $SubFolderName
 
-# Verificar si la carpeta "Sala" existe en el escritorio
-if (Test-Path $FolderPath) {
-    Write-Host "La carpeta ya existe, eliminando..."
-    Remove-Item -Recurse -Force $FolderPath
+# Crear la carpeta "Sala" en el escritorio
+if (-not (Test-Path $FolderPath)) {
+    New-Item -Path $FolderPath -ItemType Directory
+    Write-Host "Carpeta 'Sala' creada en el escritorio."
+} else {
+    Write-Host "La carpeta 'Sala' ya existe en el escritorio."
 }
 
-# Crear la carpeta "Sala" en el escritorio
-New-Item -Path $FolderPath -ItemType Directory
-
-# Crear un enlace simbólico a la carpeta de red en "Sala Cuadrada"
-New-Item -Path $SubFolderPath -ItemType Junction -Value $NetworkFolder
-
-# Crear la carpeta compartida en el directorio de red
-New-Item -Path "$NetworkFolder\$env:COMPUTERNAME" -ItemType Directory -Force
-
-Write-Host "Proceso completado."
+# Crear la subcarpeta "Sala Cuadrada" dentro de "Sala"
+if (-not (Test-Path $SubFolderPath)) {
+    New-Item -Path $SubFolderPath -ItemType Directory
+    Write-Host "Subcarpeta 'Sala Cuadrada' creada dentro de 'Sala'."
+} else {
+    Write-Host "La subcarpeta 'Sala Cuadrada' ya existe dentro de 'Sala'."
+}
